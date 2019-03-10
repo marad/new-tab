@@ -1,4 +1,5 @@
 pub mod token_storage;
+pub mod calendar;
 mod private_model;
 
 use token_storage::TokenStorage;
@@ -10,6 +11,7 @@ use std::fmt;
 type AuthResult<T> = Result<T, Box<error::Error>>;
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GoogleAuthConfig {
     pub client_id: String,
     pub client_secret: String,
@@ -103,5 +105,4 @@ impl GoogleClient {
     }
 
 }
-
 

@@ -14,6 +14,7 @@ use crate::clients::google::token_storage::DiskStorage;
 use rocket::State;
 use std::sync::Mutex;
 use crate::clients::google::GoogleClient;
+use crate::clients::google::calendar::*;
 
 unsafe impl std::marker::Sync for GoogleClient {}
 unsafe impl std::marker::Send for GoogleClient {}

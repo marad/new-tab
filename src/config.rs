@@ -3,9 +3,11 @@ use serde_json;
 use std::fs;
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Config {
     pub google_auth: GoogleAuthConfig,
     pub tokens_path: String,
+    pub calendars: Vec<String>,
 }
 
 impl Config {
