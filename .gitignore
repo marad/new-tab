@@ -3,5 +3,6 @@
 test_resources/google_tokens.json
 config.json
 tokens.json
+client_id.json
 .idea/
 *.iml
