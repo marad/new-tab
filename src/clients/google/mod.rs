@@ -78,7 +78,7 @@ impl GoogleClient {
         match &token.refresh_token {
             Some(refresh_token) => {
                 match oauth_config.exchange_refresh_token(refresh_token.clone()) {
-                    Ok(response) => Ok(Token::new(response.access_token, response.refresh_token)),
+                    Ok(response) => Ok(Token::new(response.access_token, Some(refresh_token.clone()))),
                     Err(e) => Err(Box::new(e))
                 }
 
