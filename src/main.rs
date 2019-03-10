@@ -4,23 +4,22 @@ extern crate rocket;
 #[macro_use]
 extern crate serde_derive;
 
-mod config;
 mod calendar;
 pub mod clients;
+mod config;
 use rocket_contrib::serve::StaticFiles;
 
-use std::str;
-use crate::clients::google::token_storage::DiskStorage;
-use rocket::State;
-use std::sync::Mutex;
-use crate::clients::google::GoogleClient;
 use crate::clients::google::calendar::*;
+use crate::clients::google::token_storage::DiskStorage;
+use crate::clients::google::GoogleClient;
+use rocket::State;
+use std::str;
+use std::sync::Mutex;
 
 unsafe impl std::marker::Sync for GoogleClient {}
 unsafe impl std::marker::Send for GoogleClient {}
-unsafe impl std::marker::Sync for DiskStorage{}
-unsafe impl std::marker::Send for DiskStorage{}
-
+unsafe impl std::marker::Sync for DiskStorage {}
+unsafe impl std::marker::Send for DiskStorage {}
 
 #[get("/")]
 fn index() -> &'static str {
@@ -44,7 +43,7 @@ fn main() {
 
     let google_client = GoogleClient::new(
         Box::new(DiskStorage::new(config.tokens_path)),
-        config.google_auth
+        config.google_auth,
     );
 
     let mutex = Mutex::new(google_client);

@@ -1,14 +1,13 @@
-use crate::clients::google::GoogleClient;
 use crate::clients::google::calendar::*;
+use crate::clients::google::GoogleClient;
 use chrono::prelude::*;
-use time::Duration;
-use std::error;
 use std::convert::From;
+use std::error;
+use time::Duration;
 
 pub fn playground(google_client: &mut GoogleClient) {
-    let token = google_client.get_access_token(vec![
-        "https://www.googleapis.com/auth/calendar".to_string()
-    ]);
+    let token = google_client
+        .get_access_token(vec!["https://www.googleapis.com/auth/calendar".to_string()]);
 }
 
 #[derive(Debug, Clone)]
@@ -39,17 +38,22 @@ pub struct Calendar {
 
 impl Calendar {
     pub fn new(calendars: Vec<String>, google_client: GoogleClient) -> Self {
-        Self { calendars, google_client }
+        Self {
+            calendars,
+            google_client,
+        }
     }
 
     pub fn get_events(&mut self) -> Result<Vec<Event>, Box<error::Error>> {
         let start = Utc::now();
         let end = start + Duration::weeks(1);
 
-        self.google_client.get_events(
-            self.calendars.first().unwrap(), // TODO: fetch events from multiple calendars
-            &start.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
-            &end.format("%Y-%m-%dT%H:%M:%SZ").to_string())
+        self.google_client
+            .get_events(
+                self.calendars.first().unwrap(), // TODO: fetch events from multiple calendars
+                &start.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
+                &end.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
+            )
             .map(|result| result.items.iter().map(|e| Event::from(e)).collect())
     }
 }

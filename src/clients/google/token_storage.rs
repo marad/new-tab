@@ -12,11 +12,11 @@ pub trait TokenStorage: std::marker::Sync {
 // InMemoryStorage
 
 pub struct InMemoryStorage {
-    token: Option<Token>
+    token: Option<Token>,
 }
 
 impl InMemoryStorage {
-    pub fn new() -> Self  {
+    pub fn new() -> Self {
         Self { token: None }
     }
 }
@@ -24,7 +24,10 @@ impl TokenStorage for InMemoryStorage {
     fn get_token(&self) -> Result<Token, Box<error::Error>> {
         match self.token.clone() {
             Some(t) => Ok(t),
-            None => Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Not set"))),
+            None => Err(Box::new(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Not set",
+            ))),
         }
     }
 
@@ -69,14 +72,10 @@ mod test {
     fn test_in_memory_storage() {
         // given the storage and a token
         let mut storage = InMemoryStorage::new();
-        let token = Token::new(
-            "access-token".to_string(),
-            None
-        );
+        let token = Token::new("access-token".to_string(), None);
 
         // when updating token
         storage.set_token(&token).unwrap();
-
 
         // then token should be available
         let retrieved_token = storage.get_token().unwrap();
@@ -85,12 +84,11 @@ mod test {
 
     #[test]
     fn test_disk_storage() {
-
         // given the storage and a token
         let mut storage = DiskStorage::new("test_resources/google_tokens.json".to_owned());
         let token = Token::new(
             "access-token".to_string(),
-            Some("refresh-token".to_string())
+            Some("refresh-token".to_string()),
         );
 
         // when updating token

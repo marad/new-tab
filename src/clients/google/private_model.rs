@@ -6,7 +6,9 @@ pub struct Token {
 
 impl Token {
     pub fn new(access_token: String, refresh_token: Option<String>) -> Self {
-        Token { access_token, refresh_token }
+        Token {
+            access_token,
+            refresh_token,
+        }
     }
 }
-

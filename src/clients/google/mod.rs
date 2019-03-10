@@ -1,9 +1,9 @@
-pub mod token_storage;
 pub mod calendar;
 mod private_model;
+pub mod token_storage;
 
-use token_storage::TokenStorage;
 use private_model::Token;
+use token_storage::TokenStorage;
 
 use std::error;
 use std::fmt;
@@ -29,7 +29,9 @@ pub struct AuthError {
 
 impl AuthError {
     fn new(msg: &str) -> AuthError {
-        AuthError { details: msg.to_string() }
+        AuthError {
+            details: msg.to_string(),
+        }
     }
 }
 
@@ -44,7 +46,6 @@ impl error::Error for AuthError {
         &self.details
     }
 }
-
 
 impl GoogleClient {
     pub fn new(token_storage: Box<dyn TokenStorage>, auth_config: GoogleAuthConfig) -> Self {
@@ -71,8 +72,9 @@ impl GoogleClient {
     fn authenticate(&self, scopes: &Vec<String>) -> AuthResult<Token> {
         let oauth_config = self.get_oauth_config(scopes);
         let authenticator = oauth2_noserver::Authenticator::new(oauth_config);
-        authenticator.authenticate()
-            .map(|t| Token::new( t.access_token, t.refresh_token ))
+        authenticator
+            .authenticate()
+            .map(|t| Token::new(t.access_token, t.refresh_token))
     }
 
     fn refresh_token(&self, token: &Token, scopes: &Vec<String>) -> AuthResult<Token> {
@@ -80,12 +82,14 @@ impl GoogleClient {
         match &token.refresh_token {
             Some(refresh_token) => {
                 match oauth_config.exchange_refresh_token(refresh_token.clone()) {
-                    Ok(response) => Ok(Token::new(response.access_token, Some(refresh_token.clone()))),
-                    Err(e) => Err(Box::new(e))
+                    Ok(response) => Ok(Token::new(
+                        response.access_token,
+                        Some(refresh_token.clone()),
+                    )),
+                    Err(e) => Err(Box::new(e)),
                 }
-
-            },
-            None => Err(Box::new(AuthError::new("Missing refresh token")))
+            }
+            None => Err(Box::new(AuthError::new("Missing refresh token"))),
         }
     }
 
@@ -103,6 +107,4 @@ impl GoogleClient {
 
         oauth_config
     }
-
 }
-

@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
 use crate::clients::google::GoogleClient;
+use serde::{Deserialize, Serialize};
 use std::error;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -49,13 +49,23 @@ pub struct CalendarEvents {
 }
 
 pub trait GoogleCalendar {
-    fn get_events(&mut self, calendar: &str, time_min: &str, time_max: &str) -> Result<CalendarEvents, Box<error::Error>>;
+    fn get_events(
+        &mut self,
+        calendar: &str,
+        time_min: &str,
+        time_max: &str,
+    ) -> Result<CalendarEvents, Box<error::Error>>;
 }
 
 impl GoogleCalendar for GoogleClient {
-    fn get_events(&mut self, calendar: &str, time_min: &str, time_max: &str) -> Result<CalendarEvents, Box<error::Error>> {
+    fn get_events(
+        &mut self,
+        calendar: &str,
+        time_min: &str,
+        time_max: &str,
+    ) -> Result<CalendarEvents, Box<error::Error>> {
         let token = self.get_access_token(vec![
-            "https://www.googleapis.com/auth/calendar.events.readonly".to_string()
+            "https://www.googleapis.com/auth/calendar.events.readonly".to_string(),
         ])?;
 
         let url = format!(
