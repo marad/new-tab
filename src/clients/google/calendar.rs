@@ -32,6 +32,7 @@ pub struct CalendarEvent {
     pub html_link: String,
     pub summary: String,
     pub location: Option<String>,
+    pub description: Option<String>,
     pub organizer: Organizer,
     pub start: CalendarTime,
     pub end: CalendarTime,
