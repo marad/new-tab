@@ -53,7 +53,7 @@ impl GoogleClient {
     }
 
     pub fn get_access_token(&mut self, scopes: Vec<String>) -> AuthResult<Token> {
-        let previous_token = dbg!(self.token_storage.get_token());
+        let previous_token = self.token_storage.get_token();
 
         let token = match previous_token {
             Err(_) => self.authenticate(&scopes),
