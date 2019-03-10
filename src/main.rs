@@ -9,7 +9,6 @@ pub mod clients;
 mod config;
 use rocket_contrib::serve::StaticFiles;
 
-use crate::clients::google::calendar::*;
 use crate::clients::google::token_storage::DiskStorage;
 use crate::clients::google::GoogleClient;
 use rocket::State;
@@ -32,9 +31,9 @@ fn hello(test: i32) -> String {
 }
 
 #[get("/gcal")]
-fn gcal(state: State<Mutex<GoogleClient>>) -> String {
-    let mut google_client = state.lock().unwrap();
-    calendar::playground(&mut google_client);
+fn gcal(_state: State<Mutex<GoogleClient>>) -> String {
+//    let mut google_client = state.lock().unwrap();
+//    calendar::playground(&mut google_client);
     "hello".to_string()
 }
 

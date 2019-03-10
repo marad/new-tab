@@ -5,11 +5,6 @@ use std::convert::From;
 use std::error;
 use time::Duration;
 
-pub fn playground(google_client: &mut GoogleClient) {
-    let token = google_client
-        .get_access_token(vec!["https://www.googleapis.com/auth/calendar".to_string()]);
-}
-
 #[derive(Debug, Clone)]
 pub struct Event {
     pub summary: String,

@@ -1,5 +1,4 @@
 use crate::clients::google::GoogleClient;
-use serde::{Deserialize, Serialize};
 use std::error;
 
 #[derive(Debug, Serialize, Deserialize)]
