@@ -49,7 +49,7 @@ pub struct CalendarEvents {
 
 pub trait GoogleCalendar {
     fn get_events(
-        &mut self,
+        &self,
         calendar: &str,
         time_min: &str,
         time_max: &str,
@@ -58,7 +58,7 @@ pub trait GoogleCalendar {
 
 impl GoogleCalendar for GoogleClient {
     fn get_events(
-        &mut self,
+        &self,
         calendar: &str,
         time_min: &str,
         time_max: &str,

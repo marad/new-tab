@@ -7,6 +7,7 @@ use token_storage::TokenStorage;
 
 use std::error;
 use std::fmt;
+use std::cell::RefCell;
 
 type AuthResult<T> = Result<T, Box<error::Error>>;
 
@@ -18,7 +19,7 @@ pub struct GoogleAuthConfig {
 }
 
 pub struct GoogleClient {
-    token_storage: Box<dyn TokenStorage>,
+    token_storage: RefCell<Box<dyn TokenStorage>>,
     auth_config: GoogleAuthConfig,
 }
 
@@ -50,13 +51,15 @@ impl error::Error for AuthError {
 impl GoogleClient {
     pub fn new(token_storage: Box<dyn TokenStorage>, auth_config: GoogleAuthConfig) -> Self {
         GoogleClient {
-            token_storage,
+            token_storage: RefCell::new(token_storage),
             auth_config,
         }
     }
 
-    pub fn get_access_token(&mut self, scopes: Vec<String>) -> AuthResult<Token> {
-        let previous_token = self.token_storage.get_token();
+    pub fn get_access_token(&self, scopes: Vec<String>) -> AuthResult<Token> {
+        let previous_token = {
+            self.token_storage.borrow_mut().get_token()
+        };
 
         let token = match previous_token {
             Err(_) => self.authenticate(&scopes),
@@ -64,7 +67,7 @@ impl GoogleClient {
         };
 
         token.map(|t| {
-            self.token_storage.set_token(&t).unwrap(); // TODO: handle failure
+            self.token_storage.borrow_mut().set_token(&t).unwrap(); // TODO: handle failure
             t
         })
     }
