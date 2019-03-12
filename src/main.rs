@@ -53,3 +53,46 @@ fn main() {
         .mount("/", routes![index, hello, gcal])
         .launch();
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::clients::google::calendar::*;
+    use chrono::prelude::*;
+    use time::Duration;
+
+    use calendar::Calendar;
+
+    use actix_web::{server, App, HttpRequest};
+
+    #[test]
+    fn test() -> Result<(), Box<std::error::Error>> {
+        let config = config::Config::load();
+        let google_client = GoogleClient::new(
+            Box::new(DiskStorage::new(config.tokens_path)),
+            config.google_auth,
+        );
+
+        let mut cal = Calendar::new(vec!["moriturius@gmail.com".to_string()], google_client);
+        let events = cal.get_events();
+
+        for event in events {
+            println!("{:?}", event);
+        }
+
+        Ok(())
+    }
+
+    fn index(_req: &HttpRequest) -> &'static str {
+        "Hello World!!!"
+    }
+
+    #[test]
+    fn actix()  {
+        server::new(|| App::new().resource("/", |r| r.f(index)))
+            .bind("127.0.0.1:8088")
+            .unwrap()
+            .run()
+
+    }
+}
