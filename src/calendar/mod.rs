@@ -49,6 +49,6 @@ impl Calendar {
                 &start.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
                 &end.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
             )
-            .map(|result| result.items.iter().map(|e| Event::from(e)).collect())
+            .map(|result| result.items.iter().map(Event::from).collect())
     }
 }

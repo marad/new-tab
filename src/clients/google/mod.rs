@@ -69,7 +69,7 @@ impl GoogleClient {
         })
     }
 
-    fn authenticate(&self, scopes: &Vec<String>) -> AuthResult<Token> {
+    fn authenticate(&self, scopes: &[String]) -> AuthResult<Token> {
         let oauth_config = self.get_oauth_config(scopes);
         let authenticator = oauth2_noserver::Authenticator::new(oauth_config);
         authenticator
@@ -77,7 +77,7 @@ impl GoogleClient {
             .map(|t| Token::new(t.access_token, t.refresh_token))
     }
 
-    fn refresh_token(&self, token: &Token, scopes: &Vec<String>) -> AuthResult<Token> {
+    fn refresh_token(&self, token: &Token, scopes: &[String]) -> AuthResult<Token> {
         let oauth_config = self.get_oauth_config(scopes);
         match &token.refresh_token {
             Some(refresh_token) => {
@@ -93,7 +93,7 @@ impl GoogleClient {
         }
     }
 
-    fn get_oauth_config(&self, scopes: &Vec<String>) -> oauth2_noserver::Config {
+    fn get_oauth_config(&self, scopes: &[String]) -> oauth2_noserver::Config {
         let mut oauth_config = oauth2_noserver::Config::new(
             self.auth_config.client_id.clone(),
             self.auth_config.client_secret.clone(),
