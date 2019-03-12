@@ -11,6 +11,7 @@ pub trait TokenStorage: std::marker::Sync {
 ////////////////////////////////////////////////////////////////////////////////
 // InMemoryStorage
 
+#[derive(Default)]
 pub struct InMemoryStorage {
     token: Option<Token>,
 }
@@ -20,6 +21,7 @@ impl InMemoryStorage {
         Self { token: None }
     }
 }
+
 impl TokenStorage for InMemoryStorage {
     fn get_token(&self) -> Result<Token, Box<error::Error>> {
         match self.token.clone() {
