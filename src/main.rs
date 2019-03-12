@@ -58,8 +58,6 @@ fn main() {
 mod test {
     use super::*;
     use crate::clients::google::calendar::*;
-    use chrono::prelude::*;
-    use time::Duration;
 
     use calendar::Calendar;
 
@@ -73,7 +71,7 @@ mod test {
             config.google_auth,
         );
 
-        let mut cal = Calendar::new(vec!["moriturius@gmail.com".to_string()], google_client);
+        let cal = Calendar::new(vec!["moriturius@gmail.com".to_string()], google_client);
         let events = cal.get_events();
 
         for event in events {

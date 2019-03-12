@@ -39,7 +39,7 @@ impl Calendar {
         }
     }
 
-    pub fn get_events(&mut self) -> Result<Vec<Event>, Box<error::Error>> {
+    pub fn get_events(&self) -> Result<Vec<Event>, Box<error::Error>> {
         let start = Utc::now();
         let end = start + Duration::weeks(1);
 
