@@ -1,10 +1,10 @@
 use crate::clients::google::calendar::*;
+use crate::clients::google::token_storage::TokenStorage;
 use crate::clients::google::GoogleClient;
 use chrono::prelude::*;
 use std::convert::From;
 use std::error;
 use time::Duration;
-use crate::clients::google::token_storage::TokenStorage;
 
 #[derive(Debug, Clone)]
 pub struct Event {

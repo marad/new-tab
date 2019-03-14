@@ -1,6 +1,6 @@
+use crate::clients::google::token_storage::TokenStorage;
 use crate::clients::google::GoogleClient;
 use std::error;
-use crate::clients::google::token_storage::TokenStorage;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
