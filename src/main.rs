@@ -7,9 +7,8 @@ extern crate serde_derive;
 mod calendar;
 pub mod clients;
 mod config;
-use rocket_contrib::serve::StaticFiles;
 use calendar::Calendar;
-
+use rocket_contrib::serve::StaticFiles;
 
 use crate::clients::google::token_storage::{DiskStorage, TokenStorage};
 use crate::clients::google::GoogleClient;
@@ -47,10 +46,7 @@ fn gcal(state: State<Mutex<GoogleClient<DiskStorage>>>) -> String {
 fn main() {
     let config = config::Config::load();
 
-    let google_client = GoogleClient::new(
-        DiskStorage::new(config.tokens_path),
-        config.google_auth,
-    );
+    let google_client = GoogleClient::new(DiskStorage::new(config.tokens_path), config.google_auth);
 
     let mutex = Mutex::new(google_client);
 
@@ -74,10 +70,8 @@ mod test {
     #[test]
     fn test() -> Result<(), Box<std::error::Error>> {
         let config = config::Config::load();
-        let google_client = GoogleClient::new(
-            DiskStorage::new(config.tokens_path),
-            config.google_auth,
-        );
+        let google_client =
+            GoogleClient::new(DiskStorage::new(config.tokens_path), config.google_auth);
 
         let cal = Calendar::new(vec!["moriturius@gmail.com".to_string()], google_client);
         let events = cal.get_events()?;
@@ -91,13 +85,13 @@ mod test {
     }
 
     fn index2(req: &HttpRequest<Arc<GoogleClient<DiskStorage>>>) -> &'static str {
-//        let  mutex: Mutex<GoogleClient<DiskStorage>> = req.state();
-//        let cal = Calendar::new(vec!["moriturius@gmail.com".to_string()], mutex.lock());
-//        let events= cal.get_events();
+        //        let  mutex: Mutex<GoogleClient<DiskStorage>> = req.state();
+        //        let cal = Calendar::new(vec!["moriturius@gmail.com".to_string()], mutex.lock());
+        //        let events= cal.get_events();
 
-//        for event in events {
-//            println!("{:?}", event);
-//        }
+        //        for event in events {
+        //            println!("{:?}", event);
+        //        }
 
         "Hello World!!!"
     }
@@ -110,21 +104,21 @@ mod test {
         pub value: i32,
     }
 
-//    #[test]
-//    fn actix()  {
-//        let config = config::Config::load();
-//        let google_client = GoogleClient::new(
-//            DiskStorage::new(config.tokens_path),
-//            config.google_auth,
-//        );
-//
-//        let app = App::with_state(Arc::new(Test { value: 32 }))
-//            .resource("/", |r| r.f(index))
-//            .finish();
-//
-//        server::new(|| app)
-//            .bind("127.0.0.1:8088")
-//            .unwrap()
-//            .run()
-//    }
+    //    #[test]
+    //    fn actix()  {
+    //        let config = config::Config::load();
+    //        let google_client = GoogleClient::new(
+    //            DiskStorage::new(config.tokens_path),
+    //            config.google_auth,
+    //        );
+    //
+    //        let app = App::with_state(Arc::new(Test { value: 32 }))
+    //            .resource("/", |r| r.f(index))
+    //            .finish();
+    //
+    //        server::new(|| app)
+    //            .bind("127.0.0.1:8088")
+    //            .unwrap()
+    //            .run()
+    //    }
 }

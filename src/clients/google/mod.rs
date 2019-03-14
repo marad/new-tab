@@ -5,9 +5,9 @@ pub mod token_storage;
 use private_model::Token;
 use token_storage::TokenStorage;
 
+use std::cell::RefCell;
 use std::error;
 use std::fmt;
-use std::cell::RefCell;
 
 type AuthResult<T> = Result<T, Box<error::Error>>;
 
@@ -49,7 +49,7 @@ impl error::Error for AuthError {
     }
 }
 
-impl<T:TokenStorage> GoogleClient<T> {
+impl<T: TokenStorage> GoogleClient<T> {
     pub fn new(token_storage: T, auth_config: GoogleAuthConfig) -> Self {
         GoogleClient {
             token_storage: RefCell::new(token_storage),
@@ -58,9 +58,7 @@ impl<T:TokenStorage> GoogleClient<T> {
     }
 
     pub fn get_access_token(&self, scopes: Vec<String>) -> AuthResult<Token> {
-        let previous_token = {
-            self.token_storage.borrow_mut().get_token()
-        };
+        let previous_token = { self.token_storage.borrow_mut().get_token() };
 
         let token = match previous_token {
             Err(_) => self.authenticate(&scopes),
