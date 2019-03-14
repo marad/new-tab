@@ -18,8 +18,9 @@ pub struct GoogleAuthConfig {
     pub client_secret: String,
 }
 
-pub struct GoogleClient {
-    token_storage: RefCell<Box<dyn TokenStorage>>,
+#[derive(Debug, Clone)]
+pub struct GoogleClient<T: TokenStorage> {
+    token_storage: RefCell<T>,
     auth_config: GoogleAuthConfig,
 }
 
@@ -48,8 +49,8 @@ impl error::Error for AuthError {
     }
 }
 
-impl GoogleClient {
-    pub fn new(token_storage: Box<dyn TokenStorage>, auth_config: GoogleAuthConfig) -> Self {
+impl<T:TokenStorage> GoogleClient<T> {
+    pub fn new(token_storage: T, auth_config: GoogleAuthConfig) -> Self {
         GoogleClient {
             token_storage: RefCell::new(token_storage),
             auth_config,
