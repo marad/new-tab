@@ -1,5 +1,6 @@
 use crate::clients::google::GoogleClient;
 use std::error;
+use crate::clients::google::token_storage::TokenStorage;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -20,7 +21,6 @@ pub struct Organizer {
 #[serde(rename_all = "camelCase")]
 pub struct CalendarTime {
     pub date_time: String,
-    pub time_zone: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -29,7 +29,7 @@ pub struct CalendarEvent {
     pub id: String,
     pub status: String,
     pub html_link: String,
-    pub summary: String,
+    pub summary: Option<String>,
     pub location: Option<String>,
     pub description: Option<String>,
     pub organizer: Organizer,
@@ -56,7 +56,7 @@ pub trait GoogleCalendar {
     ) -> Result<CalendarEvents, Box<error::Error>>;
 }
 
-impl GoogleCalendar for GoogleClient {
+impl<T: TokenStorage> GoogleCalendar for GoogleClient<T> {
     fn get_events(
         &self,
         calendar: &str,

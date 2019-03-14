@@ -3,7 +3,7 @@ use serde_json;
 use std::error;
 use std::fs;
 
-pub trait TokenStorage: std::marker::Sync {
+pub trait TokenStorage: std::marker::Sync + Clone {
     fn get_token(&self) -> Result<Token, Box<error::Error>>;
     fn set_token(&mut self, t: &Token) -> Result<(), Box<error::Error>>;
 }
@@ -11,7 +11,7 @@ pub trait TokenStorage: std::marker::Sync {
 ////////////////////////////////////////////////////////////////////////////////
 // InMemoryStorage
 
-#[derive(Default)]
+#[derive(Default, Debug, Clone)]
 pub struct InMemoryStorage {
     token: Option<Token>,
 }
@@ -42,6 +42,7 @@ impl TokenStorage for InMemoryStorage {
 ////////////////////////////////////////////////////////////////////////////////
 // DiskStorage
 
+#[derive(Default, Debug, Clone)]
 pub struct DiskStorage {
     file_path: String,
 }

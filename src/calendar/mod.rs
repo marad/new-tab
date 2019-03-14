@@ -4,10 +4,11 @@ use chrono::prelude::*;
 use std::convert::From;
 use std::error;
 use time::Duration;
+use crate::clients::google::token_storage::TokenStorage;
 
 #[derive(Debug, Clone)]
 pub struct Event {
-    pub summary: String,
+    pub summary: Option<String>,
     pub location: Option<String>,
     pub description: Option<String>,
     pub start_time: String,
@@ -26,13 +27,13 @@ impl From<&CalendarEvent> for Event {
     }
 }
 
-pub struct Calendar {
+pub struct Calendar<T: TokenStorage> {
     calendars: Vec<String>,
-    google_client: GoogleClient,
+    google_client: GoogleClient<T>,
 }
 
-impl Calendar {
-    pub fn new(calendars: Vec<String>, google_client: GoogleClient) -> Self {
+impl<T: TokenStorage> Calendar<T> {
+    pub fn new(calendars: Vec<String>, google_client: GoogleClient<T>) -> Self {
         Self {
             calendars,
             google_client,
@@ -46,8 +47,8 @@ impl Calendar {
         self.google_client
             .get_events(
                 self.calendars.first().unwrap(), // TODO: fetch events from multiple calendars
-                &start.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
-                &end.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
+                &start.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
+                &end.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
             )
             .map(|result| result.items.iter().map(Event::from).collect())
     }
