@@ -11,8 +11,8 @@ pub struct Event {
     pub summary: Option<String>,
     pub location: Option<String>,
     pub description: Option<String>,
-    pub start_time: String,
-    pub end_time: String,
+    pub start_time: Option<String>,
+    pub end_time: Option<String>,
 }
 
 impl From<&CalendarEvent> for Event {
@@ -45,12 +45,19 @@ impl<T: TokenStorage> Calendar<T> {
         let start = Utc::now();
         let end = start + Duration::weeks(1);
 
-        self.google_client
-            .get_events(
-                self.calendars.first().unwrap(), // TODO: fetch events from multiple calendars
-                &start.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
-                &end.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
-            )
-            .map(|result| result.items.iter().map(Event::from).collect())
+        let mut all_events: Vec<Event> = Vec::new();
+
+        for calendar in &self.calendars {
+            let mut events: Vec<Event> = self.google_client
+                .get_events(
+                    calendar,
+                    &start.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
+                    &end.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
+                )
+                .map(|result| result.items.iter().map(Event::from).collect())?;
+            all_events.append(&mut events);
+        }
+
+        Ok(all_events)
     }
 }
