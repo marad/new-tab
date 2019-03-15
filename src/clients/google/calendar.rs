@@ -20,7 +20,7 @@ pub struct Organizer {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CalendarTime {
-    pub date_time: String,
+    pub date_time: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
