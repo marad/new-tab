@@ -23,6 +23,7 @@ pub struct CalendarTime {
     pub date_time: Option<String>,
 }
 
+// TODO: model dla wdarzeń całodniowych - nie mają start i end?
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CalendarEvent {
