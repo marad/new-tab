@@ -6,7 +6,7 @@ use std::convert::From;
 use std::error;
 use time::Duration;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Event {
     pub summary: Option<String>,
     pub location: Option<String>,
@@ -27,6 +27,7 @@ impl From<&CalendarEvent> for Event {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Calendar<T: TokenStorage> {
     calendars: Vec<String>,
     google_client: GoogleClient<T>,
