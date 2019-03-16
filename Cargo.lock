@@ -261,6 +261,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "clokwerk"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "cloudabi"
 version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1015,10 +1023,12 @@ version = "0.1.0"
 dependencies = [
  "actix-web 0.7.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "clokwerk 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "oauth2_noserver 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.9.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket_contrib 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rocket_cors 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1488,6 +1498,21 @@ dependencies = [
  "rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rocket_cors"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "log 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicase 2.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicase_serde 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "url 1.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "url_serde 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2030,6 +2055,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "unicase_serde"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicase 2.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "unicode-bidi"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2064,6 +2098,15 @@ dependencies = [
  "idna 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "matches 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "percent-encoding 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "url_serde"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "url 1.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2255,6 +2298,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum cc 1.0.30 (registry+https://github.com/rust-lang/crates.io-index)" = "d01c69d08ff207f231f07196e30f84c70f1c815b04f980f8b7b01ff01f05eb92"
 "checksum cfg-if 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "082bb9b28e00d3c9d39cc03e64ce4cea0f1bb9b3fde493f0cbc008472d22bdf4"
 "checksum chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)" = "45912881121cb26fad7c38c17ba7daa18764771836b34fab7d3fbd93ed633878"
+"checksum clokwerk 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fd2fe54483927158665a9a6f1f4a064c0bc4dc5b4a9cfd8ffcb8dd3b2f3b315e"
 "checksum cloudabi 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "ddfc5b9aa5d4507acaf872de71051dfd0e309860e88966e1051e462a077aac4f"
 "checksum cookie 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)" = "1465f8134efa296b4c19db34d909637cb2bf0f7aaf21299e23e18fa29ac557cf"
 "checksum core-foundation 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)" = "286e0b41c3a20da26536c6000a280585d519fd07b3956b43aed8a79e9edce980"
@@ -2384,6 +2428,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "242154377a85c2a9e036fc31ffc8c200b9e1f22a196e47baa3b57716606ca89d"
 "checksum rocket_codegen 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7d907d6d458c859651c1cf4c8fa99b77685082bde0561db6a4600b365058f710"
 "checksum rocket_contrib 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f73e161dad5730435f51c815a5c6831d2e57b6b4299b1bf609d31b09aa9a2fa7"
+"checksum rocket_cors 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d8adde8b1ed231f4a0288085605d869baa02503310a4f80c07ed53fde24dce1b"
 "checksum rocket_http 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ba9d4f2ce5bba6e1b6d3100493bbad63879e99bbf6b4365d61e6f781daab324d"
 "checksum rustc-demangle 0.1.13 (registry+https://github.com/rust-lang/crates.io-index)" = "adacaae16d02b6ec37fdc7acfcddf365978de76d1983d3ee22afc260e1ca9619"
 "checksum rustc_version 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "138e3e0acb6c9fb258b19b67cb8abd63c00679d2851805ea151465464fe9030a"
@@ -2439,11 +2484,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum ucd-util 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "535c204ee4d8434478593480b8f86ab45ec9aae0e83c568ca81abf0fd0e88f86"
 "checksum unicase 1.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7f4765f83163b74f957c797ad9253caf97f103fb064d3999aea9568d09fc8a33"
 "checksum unicase 2.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "41d17211f887da8e4a70a45b9536f26fc5de166b81e2d5d80de4a17fd22553bd"
+"checksum unicase_serde 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6ef53697679d874d69f3160af80bc28de12730a985d57bdf2b47456ccb8b11f1"
 "checksum unicode-bidi 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)" = "49f2bd0c6468a8230e1db229cff8029217cf623c767ea5d60bfbd42729ea54d5"
 "checksum unicode-normalization 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)" = "141339a08b982d942be2ca06ff8b076563cbe223d1befd5450716790d44e2426"
 "checksum unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fc72304796d0818e357ead4e000d19c9c174ab23dc11093ac919054d20a6a7fc"
 "checksum untrusted 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)" = "55cd1f4b4e96b46aeb8d4855db4a7a9bd96eeeb5c6a1ab54593328761642ce2f"
 "checksum url 1.7.2 (registry+https://github.com/rust-lang/crates.io-index)" = "dd4e7c0d531266369519a4aa4f399d748bd37043b00bde1e4ff1f60a120b355a"
+"checksum url_serde 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "74e7d099f1ee52f823d4bdd60c93c3602043c728f5db3b97bdb548467f7bddea"
 "checksum utf8-ranges 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "796f7e48bef87609f7ade7e06495a87d5cd06c7866e6a5cbfceffc558a243737"
 "checksum uuid 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)" = "0238db0c5b605dd1cf51de0f21766f97fba2645897024461d6a00c036819a768"
 "checksum v_escape 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "c8b50688edb86f4c092a1a9fe8bda004b0faa3197100897653809e97e09a2814"

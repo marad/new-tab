@@ -7,6 +7,7 @@ use std::error;
 use time::Duration;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Event {
     pub summary: Option<String>,
     pub location: Option<String>,
@@ -21,8 +22,14 @@ impl From<&CalendarEvent> for Event {
             summary: ce.summary.clone(),
             location: ce.location.clone(),
             description: ce.description.clone(),
-            start_time: ce.start.date_time.clone(),
-            end_time: ce.end.date_time.clone(),
+            start_time: match &ce.start {
+                Some(start_time) => start_time.date_time.clone(),
+                None => None,
+            },
+            end_time: match &ce.end {
+                Some(end_time) => end_time.date_time.clone(),
+                None => None,
+            },
         }
     }
 }
@@ -42,17 +49,18 @@ impl<T: TokenStorage> Calendar<T> {
     }
 
     pub fn get_events(&self) -> Result<Vec<Event>, Box<error::Error>> {
-        let start = Utc::now();
-        let end = start + Duration::weeks(1);
+        let start = dbg!(Utc::now());
+        let end = dbg!(start + Duration::weeks(1));
 
         let mut all_events: Vec<Event> = Vec::new();
 
         for calendar in &self.calendars {
-            let mut events: Vec<Event> = self.google_client
+            let mut events: Vec<Event> = self
+                .google_client
                 .get_events(
                     calendar,
-                    &start.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
-                    &end.format("%Y-%m-%dT%H:%M:%S-00").to_string(),
+                    &start.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
+                    &end.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
                 )
                 .map(|result| result.items.iter().map(Event::from).collect())?;
             all_events.append(&mut events);

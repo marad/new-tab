@@ -29,13 +29,13 @@ pub struct CalendarTime {
 pub struct CalendarEvent {
     pub id: String,
     pub status: String,
-    pub html_link: String,
+    pub html_link: Option<String>,
     pub summary: Option<String>,
     pub location: Option<String>,
     pub description: Option<String>,
-    pub organizer: Organizer,
-    pub start: CalendarTime,
-    pub end: CalendarTime,
+    pub organizer: Option<Organizer>,
+    pub start: Option<CalendarTime>,
+    pub end: Option<CalendarTime>,
     pub attendees: Option<Vec<Attendee>>,
 }
 
@@ -65,19 +65,19 @@ impl<T: TokenStorage> GoogleCalendar for GoogleClient<T> {
         time_max: &str,
     ) -> Result<CalendarEvents, Box<error::Error>> {
         let token = self.get_access_token(vec![
-            "https://www.googleapis.com/auth/calendar.events.readonly".to_string(),
+            "https://www.googleapis.com/auth/calendar.readolly".to_string(),
         ])?;
 
-        let url = format!(
-            "https://www.googleapis.com/calendar/v3/calendars/{}/events?timeMin={}&timeMax={}",
+        let url = dbg!(format!(
+            "https://www.googleapis.com/calendar/v3/calendars/{}/events?timeMin={}&timeMax={}&singleEvents=true",
             calendar, time_min, time_max
-        );
+        ));
 
-        let mut result = reqwest::Client::builder()
+        let mut result = dbg!(reqwest::Client::builder()
             .build()?
             .get(&url)
             .header("Authorization", format!("Bearer {}", &token.access_token))
-            .send()?;
+            .send())?;
 
         Ok(result.json()?)
     }
