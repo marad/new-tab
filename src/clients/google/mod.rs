@@ -5,9 +5,9 @@ pub mod token_storage;
 use private_model::Token;
 use token_storage::TokenStorage;
 
-use std::cell::RefCell;
 use std::error;
 use std::fmt;
+use std::sync::{Arc, RwLock};
 
 type AuthResult<T> = Result<T, Box<error::Error>>;
 
@@ -20,7 +20,7 @@ pub struct GoogleAuthConfig {
 
 #[derive(Debug, Clone)]
 pub struct GoogleClient<T: TokenStorage> {
-    token_storage: RefCell<T>,
+    token_storage: Arc<RwLock<T>>,
     auth_config: GoogleAuthConfig,
 }
 
@@ -52,13 +52,19 @@ impl error::Error for AuthError {
 impl<T: TokenStorage> GoogleClient<T> {
     pub fn new(token_storage: T, auth_config: GoogleAuthConfig) -> Self {
         GoogleClient {
-            token_storage: RefCell::new(token_storage),
+            token_storage: Arc::new(RwLock::new(token_storage)),
             auth_config,
         }
     }
 
+    pub fn has_access_token(&self) -> bool {
+        // TODO: fix the unwrap here and below on token_storage
+        let previous_token = { self.token_storage.read().unwrap().get_token() };
+        previous_token.is_ok()
+    }
+
     pub fn get_access_token(&self, scopes: Vec<String>) -> AuthResult<Token> {
-        let previous_token = { self.token_storage.borrow_mut().get_token() };
+        let previous_token = { self.token_storage.read().unwrap().get_token() };
 
         let token = match previous_token {
             Err(_) => self.authenticate(&scopes),
@@ -66,7 +72,7 @@ impl<T: TokenStorage> GoogleClient<T> {
         };
 
         token.map(|t| {
-            self.token_storage.borrow_mut().set_token(&t).unwrap(); // TODO: handle failure
+            self.token_storage.write().unwrap().set_token(&t).unwrap(); // TODO: handle failure
             t
         })
     }

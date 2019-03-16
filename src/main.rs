@@ -10,25 +10,30 @@ mod config;
 use calendar::{Calendar, Event};
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
+use rocket_cors::AllowedOrigins;
 
 use crate::clients::google::token_storage::DiskStorage;
 use crate::clients::google::GoogleClient;
 use rocket::State;
 use std::error;
-use std::sync::Mutex;
+use std::sync::{Arc, RwLock};
+
+use clokwerk::{Scheduler, TimeUnits};
+use std::time::Duration;
+
+struct AppState {
+    pub events: Vec<Event>,
+}
+type SharedAppState = Arc<RwLock<AppState>>;
 
 #[get("/events")]
-fn events(
-    state: State<Mutex<Calendar<DiskStorage>>>,
-) -> Result<Json<Vec<Event>>, Box<error::Error>> {
+fn events(app_state: State<SharedAppState>) -> Result<Json<Vec<Event>>, Box<error::Error>> {
     // TODO: zamiast error::Error powinien pewnie zwracać jakiś Json<RestError>
-    match state.lock() {
-        Ok(calendar) => Ok(Json(calendar.get_events()?)),
-        _ => Err(From::from("Error while getting events...")),
-    }
+    let app_state = app_state.read().unwrap();
+    Ok(Json(app_state.events.clone()))
 }
 
-fn main() {
+fn main() -> Result<(), Box<error::Error>> {
     let config = config::Config::load();
 
     let google_client = GoogleClient::new(
@@ -37,10 +42,38 @@ fn main() {
     );
     let calendar = Calendar::new(config.calendars.clone(), google_client);
 
+    let app_state = AppState {
+        events: calendar.get_events()?,
+    };
+
+    let options = rocket_cors::Cors {
+        allowed_origins: AllowedOrigins::all(),
+        ..Default::default()
+    };
+
+    let shared_calendar = Arc::new(RwLock::new(calendar));
+    let shared_app_state = Arc::new(RwLock::new(app_state));
+
+    let lambda_calendar = shared_calendar.clone();
+    let lambda_app_state = shared_app_state.clone();
+    let mut scheduler = Scheduler::new();
+    scheduler.every(5.minutes()).run(move || {
+        let mut app_state = lambda_app_state.write().unwrap();
+        let calendar = lambda_calendar.read().unwrap();
+
+        app_state.events = calendar.get_events().unwrap();
+    });
+
+    let thread_handle = scheduler.watch_thread(Duration::from_millis(100));
+
     rocket::ignite()
-        .manage(Mutex::new(calendar))
+        .manage(shared_app_state)
         .manage(config)
         .mount("/static/", StaticFiles::from("static/"))
         .mount("/", routes![events])
+        .attach(options)
         .launch();
+
+    thread_handle.stop();
+    Ok(())
 }
