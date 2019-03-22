@@ -17,6 +17,7 @@ pub struct InMemoryStorage {
 }
 
 impl InMemoryStorage {
+    #[warn(dead_code)]
     pub fn new() -> Self {
         Self { token: None }
     }
