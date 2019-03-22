@@ -9,6 +9,9 @@ use std::error;
 use std::fmt;
 use std::sync::{Arc, RwLock};
 
+pub use token_storage::DiskStorage;
+pub use token_storage::InMemoryStorage;
+
 type AuthResult<T> = Result<T, Box<error::Error>>;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
