@@ -60,12 +60,6 @@ impl<T: TokenStorage> GoogleClient<T> {
         }
     }
 
-    pub fn has_access_token(&self) -> bool {
-        // TODO: fix the unwrap here and below on token_storage
-        let previous_token = { self.token_storage.read().unwrap().get_token() };
-        previous_token.is_ok()
-    }
-
     pub fn get_access_token(&self, scopes: Vec<String>) -> AuthResult<Token> {
         let previous_token = { self.token_storage.read().unwrap().get_token() };
 

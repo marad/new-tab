@@ -1,43 +1,4 @@
-/*
-impl<T: TokenStorage> GoogleCalendar for GoogleClient<T> {
-    fn get_events(
-        &self,
-        calendar: &str,
-        time_min: &str,
-        time_max: &str,
-    ) -> Result<CalendarEvents, Box<error::Error>> {
-        let token = self.get_access_token(vec![
-            "https://www.googleapis.com/auth/calendar.readolly".to_string(),
-        ])?;
-
-        let url = dbg!(format!(
-            "https://www.googleapis.com/calendar/v3/calendars/{}/events?timeMin={}&timeMax={}&singleEvents=true",
-            calendar, time_min, time_max
-        ));
-
-        let mut result = dbg!(reqwest::Client::builder()
-            .build()?
-            .get(&url)
-            .header("Authorization", format!("Bearer {}", &token.access_token))
-            .send())?;
-
-        Ok(result.json()?)
-    }
-}
-
-export class HnItem {
-  title: string;
-  time: Number;
-  type: string;
-  url: string;
-  kids: Number[];
-  score: Number;
-  id: Number;
-}
-
-
-*/
-
+use rayon::prelude::*;
 use std::error;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -52,12 +13,15 @@ pub struct Item {
     pub id: u32,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Hackernews {
     base_url: String,
     item_limit: u32,
 }
 
 impl Hackernews {
+    #[allow(dead_code)]
     pub fn new(base_url: String, item_limit: u32) -> Self {
         Self {
             base_url,
@@ -65,18 +29,21 @@ impl Hackernews {
         }
     }
 
-    pub fn top_stories(&self) -> Result<Vec<u32>, Box<error::Error>> {
-        let url = dbg!(format!("{}/topstories.json", &self.base_url));
-        let mut result = dbg!(reqwest::Client::builder().build()?.get(&url).send())?;
+    pub fn top_stories(&self) -> Result<Vec<Item>, Box<error::Error>> {
+        let url = format!("{}/topstories.json", &self.base_url);
+        let mut result = reqwest::Client::builder().build()?.get(&url).send()?;
         let mut item_ids: Vec<u32> = result.json()?;
         item_ids.truncate(self.item_limit as usize);
-        let result: Vec<_> = dbg!(item_ids.iter().map(|id| self.get_item(id)).collect());
-        Ok(item_ids)
-        //Ok(item_ids.map(self.get_item))
+        Ok(item_ids
+            .par_iter()
+            .filter_map(|id| Result::ok(self.get_item(id)))
+            .collect())
     }
 
-    pub fn get_item(&self, item_id: &u32) -> Result<Item, Box<error::Error>> {
-        Err(From::from("Hello World"))
+    fn get_item(&self, item_id: &u32) -> Result<Item, Box<error::Error>> {
+        let url = dbg!(format!("{}/item/{}.json", &self.base_url, item_id));
+        let mut result = reqwest::Client::builder().build()?.get(&url).send()?;
+        Ok(result.json()?)
     }
 }
 
@@ -87,7 +54,6 @@ mod test {
     #[test]
     fn test_hn() {
         let hn = Hackernews::new("https://hacker-news.firebaseio.com/v0".to_string(), 10);
-
         dbg!(hn.top_stories());
     }
 }
