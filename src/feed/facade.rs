@@ -16,6 +16,6 @@ impl FeedItem {
     }
 }
 
-pub trait FeedFacade {
+pub trait FeedFacade: Send + Sync {
     fn get_items(&self) -> Result<Vec<FeedItem>, Box<error::Error>>;
 }
