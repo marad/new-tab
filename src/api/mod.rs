@@ -4,8 +4,8 @@ use rocket_contrib::serve::StaticFiles;
 use rocket_cors::AllowedOrigins;
 
 use crate::calendar::Event;
-use crate::clients::hackernews::Item;
 use crate::common::*;
+use crate::feed::FeedItem;
 use std::sync::{Arc, RwLock};
 
 pub struct Api {}
@@ -18,7 +18,7 @@ fn events(app_state: State<SharedAppState>) -> Json<Vec<Event>> {
 }
 
 #[get("/feed")]
-fn feed(app_state: State<SharedAppState>) -> Json<Vec<Item>> {
+fn feed(app_state: State<SharedAppState>) -> Json<Vec<FeedItem>> {
     let app_state = app_state.read().unwrap();
     Json(app_state.feed.clone())
 }

@@ -1,5 +1,4 @@
 use crate::clients::google::GoogleAuthConfig;
-use crate::clients::hackernews::Hackernews;
 use serde_json;
 use std::fs;
 
@@ -9,7 +8,6 @@ pub struct Config {
     pub google_auth: GoogleAuthConfig,
     pub tokens_path: String,
     pub calendars: Vec<String>,
-    pub hackernews: Hackernews,
 }
 
 impl Config {

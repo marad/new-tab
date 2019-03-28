@@ -9,6 +9,7 @@ use crate::calendar::Calendar;
 use crate::clients::google::{DiskStorage, GoogleClient};
 use crate::common::*;
 use crate::config;
+use crate::feed::FeedConfig;
 
 pub struct App {}
 
@@ -22,11 +23,13 @@ impl App {
 
         let app_state = Arc::new(RwLock::new(AppState {
             events: context.calendar.get_events()?,
-            feed: context.config.hackernews.top_stories()?,
+            feed: context.feed.get_items()?,
         }));
 
-        self.start_scheduler(&context, app_state.clone());
+        let context = Arc::new(RwLock::new(context));
+        let scheduler = self.start_scheduler(&context, &app_state);
         Api::run_server(app_state);
+        scheduler.stop();
         Ok(())
     }
 
@@ -40,36 +43,53 @@ impl App {
 
         let calendar = Calendar::new(config.calendars.clone(), google_client);
 
-        AppContext { config, calendar }
+        let feed = Box::new(FeedConfig::new().hackernews_feed());
+
+        AppContext {
+            feed,
+            config,
+            calendar,
+        }
     }
 
     fn start_scheduler(
         &self,
-        context: &AppContext,
-        app_state: Arc<RwLock<AppState>>,
+        context: &Arc<RwLock<AppContext>>,
+        app_state: &Arc<RwLock<AppState>>,
     ) -> ScheduleHandle {
-        let calendar = context.calendar.clone();
-
         let mut scheduler = Scheduler::new();
-        let google_state = app_state.clone();
-        scheduler.every(5.minutes()).run(move || {
-            let mut app_state = google_state.write().unwrap();
 
-            match calendar.get_events() {
-                Ok(events) => app_state.events = events,
-                Err(err) => eprintln!("Error while updating calendar events: {}", err),
-            }
-        });
+        {
+            let context = context.clone();
+            let state = app_state.clone();
+            scheduler.every(5.minutes()).run(move || {
+                let calendar = &context.read().unwrap().calendar;
+                let mut state = state.write().unwrap();
 
-        let hn_client = context.config.hackernews.clone();
-        let hn_state = app_state.clone();
-        scheduler.every(5.minutes()).run(move || {
-            let mut app_state = hn_state.write().unwrap();
-            match hn_client.top_stories() {
-                Ok(stories) => app_state.feed = stories,
-                Err(err) => eprintln!("Error while updating hackernews stories: {}", err),
-            }
-        });
+                println!("Updating calendar events...");
+
+                match calendar.get_events() {
+                    Ok(events) => state.events = events,
+                    Err(err) => eprintln!("Error while updating calendar events: {}", err),
+                }
+            });
+        }
+
+        {
+            let context = context.clone();
+            let state = app_state.clone();
+            scheduler.every(5.minutes()).run(move || {
+                let feed = &context.read().unwrap().feed;
+                let mut state = state.write().unwrap();
+
+                println!("Updating feed items...");
+
+                match feed.get_items() {
+                    Ok(items) => state.feed = items,
+                    Err(err) => eprintln!("Error while updating feed items: {}", err),
+                }
+            });
+        }
 
         scheduler.watch_thread(Duration::from_millis(100))
     }
