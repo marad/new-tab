@@ -4,12 +4,12 @@ use std::time::Duration;
 
 use clokwerk::{ScheduleHandle, Scheduler, TimeUnits};
 
-use crate::api::Api;
 use crate::calendar::Calendar;
 use crate::clients::google::{DiskStorage, GoogleClient};
 use crate::common::*;
 use crate::config;
 use crate::feed::FeedConfig;
+use crate::server::{ServerConfig, ServerFacade};
 
 pub struct App {}
 
@@ -27,9 +27,10 @@ impl App {
         }));
 
         let context = Arc::new(RwLock::new(context));
-        let scheduler = self.start_scheduler(&context, &app_state);
-        Api::run_server(app_state);
-        scheduler.stop();
+        let _scheduler = self.start_scheduler(&context, &app_state);
+        ServerConfig::new()
+            .rocket_server(&app_state)
+            .start_server()?;
         Ok(())
     }
 

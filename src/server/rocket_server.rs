@@ -3,12 +3,11 @@ use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
 use rocket_cors::AllowedOrigins;
 
+use super::facade::ServerFacade;
 use crate::calendar::Event;
 use crate::common::*;
 use crate::feed::FeedItem;
-use std::sync::{Arc, RwLock};
-
-pub struct Api {}
+use std::error;
 
 #[get("/events")]
 fn events(app_state: State<SharedAppState>) -> Json<Vec<Event>> {
@@ -23,18 +22,31 @@ fn feed(app_state: State<SharedAppState>) -> Json<Vec<FeedItem>> {
     Json(app_state.feed.clone())
 }
 
-impl Api {
-    pub fn run_server(app_state: Arc<RwLock<AppState>>) {
+pub struct RocketServer {
+    app_state: SharedAppState,
+}
+
+impl RocketServer {
+    pub fn new(app_state: &SharedAppState) -> Self {
+        Self {
+            app_state: app_state.clone(),
+        }
+    }
+}
+
+impl ServerFacade for RocketServer {
+    fn start_server(&self) -> Result<(), Box<error::Error>> {
         let options = rocket_cors::Cors {
             allowed_origins: AllowedOrigins::all(),
             ..Default::default()
         };
 
         rocket::ignite()
-            .manage(app_state)
+            .manage(self.app_state.clone())
             .mount("/static/", StaticFiles::from("static/"))
             .mount("/", routes![events, feed])
             .attach(options)
             .launch();
+        Ok(())
     }
 }

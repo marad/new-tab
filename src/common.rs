@@ -17,3 +17,5 @@ pub struct AppContext {
     pub config: config::Config,
     pub calendar: Calendar<DiskStorage>,
 }
+
+pub type SharedAppContext = Shared<AppContext>;
