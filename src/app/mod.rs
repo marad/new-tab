@@ -19,12 +19,7 @@ impl App {
 
     pub fn start(&self) -> Result<(), Box<error::Error>> {
         let context = Arc::new(self.create_context());
-
-        let app_state = Arc::new(RwLock::new(AppState {
-            events: context.calendar.get_events()?,
-            feed: context.feed.get_items()?,
-        }));
-
+        let app_state = Arc::new(RwLock::new(self.create_initial_app_state(&context)?));
         let _scheduler = self.start_scheduler(&context, &app_state);
         context.server.start_server(app_state)?;
         Ok(())
@@ -38,6 +33,16 @@ impl App {
             server: Box::new(ServerConfig::new().rocket_server()),
             config,
         }
+    }
+
+    fn create_initial_app_state(
+        &self,
+        context: &Arc<AppContext>,
+    ) -> Result<AppState, Box<error::Error>> {
+        Ok(AppState {
+            events: context.calendar.get_events()?,
+            feed: context.feed.get_items()?,
+        })
     }
 
     fn start_scheduler(
