@@ -72,6 +72,6 @@ mod test {
     #[test]
     fn test_hn() {
         let hn = Hackernews::new("https://hacker-news.firebaseio.com/v0".to_string(), 10);
-        dbg!(hn.top_stories());
+        let _ = dbg!(hn.top_stories());
     }
 }

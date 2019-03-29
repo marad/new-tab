@@ -4,8 +4,7 @@ use std::time::Duration;
 
 use clokwerk::{ScheduleHandle, Scheduler, TimeUnits};
 
-use crate::calendar::Calendar;
-use crate::clients::google::{DiskStorage, GoogleClient};
+use crate::calendar::CalendarConfig;
 use crate::common::*;
 use crate::config;
 use crate::feed::FeedConfig;
@@ -37,13 +36,7 @@ impl App {
     fn create_context(&self) -> AppContext {
         let config = config::Config::load();
 
-        let google_client = GoogleClient::new(
-            DiskStorage::new(config.tokens_path.clone()),
-            config.google_auth.clone(),
-        );
-
-        let calendar = Calendar::new(config.calendars.clone(), google_client);
-
+        let calendar = Box::new(CalendarConfig::new().google_calendar(&config));
         let feed = Box::new(FeedConfig::new().hackernews_feed());
 
         AppContext {

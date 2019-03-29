@@ -3,7 +3,7 @@ use serde_json;
 use std::error;
 use std::fs;
 
-pub trait TokenStorage: std::marker::Sync + Clone {
+pub trait TokenStorage: Send + Sync + Clone {
     fn get_token(&self) -> Result<Token, Box<error::Error>>;
     fn set_token(&mut self, t: &Token) -> Result<(), Box<error::Error>>;
 }
