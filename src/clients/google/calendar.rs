@@ -65,7 +65,7 @@ impl<T: TokenStorage> GoogleCalendar for GoogleClient<T> {
         time_max: &str,
     ) -> Result<CalendarEvents, Box<error::Error>> {
         let token = self.get_access_token(vec![
-            "https://www.googleapis.com/auth/calendar.readolly".to_string(),
+            "https://www.googleapis.com/auth/calendar.readonly".to_string(),
         ])?;
 
         let url = dbg!(format!(
