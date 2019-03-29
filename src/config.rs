@@ -23,6 +23,6 @@ mod test {
 
     #[test]
     fn test_reading_config() {
-        let cfg = dbg!(Config::load());
+        let _cfg = dbg!(Config::load());
     }
 }

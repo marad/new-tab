@@ -6,9 +6,9 @@ use clokwerk::{ScheduleHandle, Scheduler, TimeUnits};
 
 use crate::calendar::CalendarConfig;
 use crate::common::*;
-use crate::config;
+use crate::config::Config;
 use crate::feed::FeedConfig;
-use crate::server::{ServerConfig, ServerFacade};
+use crate::server::ServerConfig;
 
 pub struct App {}
 
@@ -18,37 +18,31 @@ impl App {
     }
 
     pub fn start(&self) -> Result<(), Box<error::Error>> {
-        let context = self.create_context();
+        let context = Arc::new(self.create_context());
 
         let app_state = Arc::new(RwLock::new(AppState {
             events: context.calendar.get_events()?,
             feed: context.feed.get_items()?,
         }));
 
-        let context = Arc::new(RwLock::new(context));
         let _scheduler = self.start_scheduler(&context, &app_state);
-        ServerConfig::new()
-            .rocket_server()
-            .start_server(app_state)?;
+        context.server.start_server(app_state)?;
         Ok(())
     }
 
     fn create_context(&self) -> AppContext {
-        let config = config::Config::load();
-
-        let calendar = Box::new(CalendarConfig::new().google_calendar(&config));
-        let feed = Box::new(FeedConfig::new().hackernews_feed());
-
+        let config = Config::load();
         AppContext {
-            feed,
+            feed: Box::new(FeedConfig::new().hackernews_feed()),
+            calendar: Box::new(CalendarConfig::new().google_calendar(&config)),
+            server: Box::new(ServerConfig::new().rocket_server()),
             config,
-            calendar,
         }
     }
 
     fn start_scheduler(
         &self,
-        context: &Arc<RwLock<AppContext>>,
+        context: &Arc<AppContext>,
         app_state: &Arc<RwLock<AppState>>,
     ) -> ScheduleHandle {
         let mut scheduler = Scheduler::new();
@@ -57,7 +51,7 @@ impl App {
             let context = context.clone();
             let state = app_state.clone();
             scheduler.every(5.minutes()).run(move || {
-                let calendar = &context.read().unwrap().calendar;
+                let calendar = &context.calendar;
                 let mut state = state.write().unwrap();
 
                 println!("Updating calendar events...");
@@ -73,7 +67,7 @@ impl App {
             let context = context.clone();
             let state = app_state.clone();
             scheduler.every(5.minutes()).run(move || {
-                let feed = &context.read().unwrap().feed;
+                let feed = &context.feed;
                 let mut state = state.write().unwrap();
 
                 println!("Updating feed items...");
