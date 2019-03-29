@@ -28,8 +28,8 @@ impl App {
         let context = Arc::new(RwLock::new(context));
         let _scheduler = self.start_scheduler(&context, &app_state);
         ServerConfig::new()
-            .rocket_server(&app_state)
-            .start_server()?;
+            .rocket_server()
+            .start_server(app_state)?;
         Ok(())
     }
 

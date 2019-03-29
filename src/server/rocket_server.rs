@@ -22,27 +22,23 @@ fn feed(app_state: State<SharedAppState>) -> Json<Vec<FeedItem>> {
     Json(app_state.feed.clone())
 }
 
-pub struct RocketServer {
-    app_state: SharedAppState,
-}
+pub struct RocketServer {}
 
 impl RocketServer {
-    pub fn new(app_state: &SharedAppState) -> Self {
-        Self {
-            app_state: app_state.clone(),
-        }
+    pub fn new() -> Self {
+        Self {}
     }
 }
 
 impl ServerFacade for RocketServer {
-    fn start_server(&self) -> Result<(), Box<error::Error>> {
+    fn start_server(&self, app_state: SharedAppState) -> Result<(), Box<error::Error>> {
         let options = rocket_cors::Cors {
             allowed_origins: AllowedOrigins::all(),
             ..Default::default()
         };
 
         rocket::ignite()
-            .manage(self.app_state.clone())
+            .manage(app_state)
             .mount("/static/", StaticFiles::from("static/"))
             .mount("/", routes![events, feed])
             .attach(options)
