@@ -1,3 +1,4 @@
+use super::actix_server::ActixServer;
 use super::facade::ServerFacade;
 use super::rocket_server::RocketServer;
 
@@ -10,5 +11,9 @@ impl ServerConfig {
 
     pub fn rocket_server(&self) -> impl ServerFacade {
         RocketServer::new()
+    }
+
+    pub fn actix_server(&self) -> impl ServerFacade {
+        ActixServer::new()
     }
 }

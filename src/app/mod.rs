@@ -30,7 +30,8 @@ impl App {
         AppContext {
             feed: Box::new(FeedConfig::new().hackernews_feed()),
             calendar: Box::new(CalendarConfig::new().google_calendar(&config)),
-            server: Box::new(ServerConfig::new().rocket_server()),
+            //server: Box::new(ServerConfig::new().rocket_server()),
+            server: Box::new(ServerConfig::new().actix_server()),
             config,
         }
     }

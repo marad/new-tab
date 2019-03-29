@@ -22,7 +22,7 @@ fn feed(app_state: State<SharedAppState>) -> Json<Vec<FeedItem>> {
     Json(app_state.feed.clone())
 }
 
-pub struct RocketServer {}
+pub struct RocketServer;
 
 impl RocketServer {
     pub fn new() -> Self {

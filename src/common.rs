@@ -6,6 +6,7 @@ use std::sync::{Arc, RwLock};
 
 pub type Shared<T> = Arc<RwLock<T>>;
 
+#[derive(Clone, Debug)]
 pub struct AppState {
     pub events: Vec<Event>,
     pub feed: Vec<FeedItem>,
