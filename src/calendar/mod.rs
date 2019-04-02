@@ -3,7 +3,7 @@ mod facade;
 mod google_calendar;
 mod memory_calendar;
 
-pub use config::CalendarConfig;
+pub use config::*;
 pub use facade::CalendarFacade;
 pub use facade::Event;
 

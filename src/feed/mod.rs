@@ -3,7 +3,7 @@ mod facade;
 mod hackernews_feed;
 mod memory_feed;
 
-pub use config::FeedConfig;
+pub use config::*;
 pub use facade::FeedFacade;
 pub use facade::FeedItem;
 
@@ -16,7 +16,7 @@ mod test {
         // given example items and the in-memory feed
         let item1 = FeedItem::new(&"url1", &"title1");
         let item2 = FeedItem::new(&"url2", &"title2");
-        let feed = FeedConfig::new().memory_feed(vec![item1.clone(), item2.clone()]);
+        let feed = memory(vec![item1.clone(), item2.clone()]);
 
         // when fetching items
         let result = dbg!(feed.get_items())?;

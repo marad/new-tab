@@ -4,11 +4,11 @@ use std::time::Duration;
 
 use clokwerk::{ScheduleHandle, Scheduler, TimeUnits};
 
-use crate::calendar::CalendarConfig;
+use crate::calendar;
 use crate::common::*;
 use crate::config::Config;
-use crate::feed::FeedConfig;
-use crate::server::ServerConfig;
+use crate::feed;
+use crate::server;
 
 pub struct App {}
 
@@ -28,10 +28,9 @@ impl App {
     fn create_context(&self) -> AppContext {
         let config = Config::load();
         AppContext {
-            feed: Box::new(FeedConfig::new().hackernews_feed()),
-            calendar: Box::new(CalendarConfig::new().google_calendar(&config)),
-            //server: Box::new(ServerConfig::new().rocket_server()),
-            server: Box::new(ServerConfig::new().actix_server()),
+            feed: Box::new(feed::hackernews()),
+            calendar: Box::new(calendar::google_calendar(&config)),
+            server: Box::new(server::actix()),
             config,
         }
     }
