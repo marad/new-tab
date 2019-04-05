@@ -1,7 +1,7 @@
-use crate::clients::google::{DiskStorage, GoogleClient};
 use crate::config::Config;
 
 use super::facade::*;
+use super::google_calendar::client::{DiskStorage, GoogleClient};
 use super::google_calendar::Calendar;
 use super::memory_calendar::InMemoryCalendar;
 

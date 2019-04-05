@@ -4,7 +4,6 @@ extern crate serde_derive;
 
 mod app;
 mod calendar;
-mod clients;
 mod common;
 mod config;
 mod feed;

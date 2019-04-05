@@ -1,6 +1,7 @@
 mod config;
+mod error;
 mod facade;
-mod google_calendar;
+pub mod google_calendar; // FIXME: ten moduł nie powinien być publiczny
 mod memory_calendar;
 
 pub use config::*;

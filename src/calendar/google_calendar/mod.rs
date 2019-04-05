@@ -1,6 +1,8 @@
-use crate::clients::google::calendar::*;
-use crate::clients::google::token_storage::TokenStorage;
-use crate::clients::google::GoogleClient;
+pub mod client;
+
+use client::calendar::*;
+use client::token_storage::TokenStorage;
+use client::GoogleClient;
 
 use chrono::prelude::*;
 use std::convert::From;

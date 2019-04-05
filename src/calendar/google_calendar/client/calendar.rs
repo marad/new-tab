@@ -1,5 +1,5 @@
-use crate::clients::google::token_storage::TokenStorage;
-use crate::clients::google::GoogleClient;
+use super::token_storage::TokenStorage;
+use super::GoogleClient;
 
 use std::error;
 

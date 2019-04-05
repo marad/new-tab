@@ -1,4 +1,5 @@
-use crate::clients::google::GoogleAuthConfig;
+// FIXME: ta konfiguracja powinna być na poziomie fasady modułu
+use crate::calendar::google_calendar::client::GoogleAuthConfig;
 use serde_json;
 use std::fs;
 
