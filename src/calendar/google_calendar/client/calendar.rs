@@ -1,7 +1,7 @@
 use super::token_storage::TokenStorage;
 use super::GoogleClient;
 
-use std::error;
+use failure::Fallible;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -55,7 +55,7 @@ pub trait GoogleCalendar {
         calendar: &str,
         time_min: &str,
         time_max: &str,
-    ) -> Result<CalendarEvents, Box<error::Error>>;
+    ) -> Fallible<CalendarEvents>;
 }
 
 impl<T: TokenStorage> GoogleCalendar for GoogleClient<T> {
@@ -64,7 +64,7 @@ impl<T: TokenStorage> GoogleCalendar for GoogleClient<T> {
         calendar: &str,
         time_min: &str,
         time_max: &str,
-    ) -> Result<CalendarEvents, Box<error::Error>> {
+    ) -> Fallible<CalendarEvents> {
         let token = self.get_access_token(vec![
             "https://www.googleapis.com/auth/calendar.readonly".to_string(),
         ])?;

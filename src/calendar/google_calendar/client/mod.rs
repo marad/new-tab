@@ -5,14 +5,13 @@ pub mod token_storage;
 use private_model::Token;
 use token_storage::TokenStorage;
 
-use std::error;
-use std::fmt;
+use failure::{Error, Fallible};
 use std::sync::{Arc, RwLock};
 
 pub use token_storage::DiskStorage;
 pub use token_storage::InMemoryStorage;
 
-type AuthResult<T> = Result<T, Box<error::Error>>;
+type AuthResult<T> = Fallible<T>;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -27,29 +26,12 @@ pub struct GoogleClient<T: TokenStorage> {
     auth_config: GoogleAuthConfig,
 }
 
-#[derive(Debug)]
-pub struct AuthError {
-    details: String,
-}
-
-impl AuthError {
-    fn new(msg: &str) -> AuthError {
-        AuthError {
-            details: msg.to_string(),
-        }
-    }
-}
-
-impl fmt::Display for AuthError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.details)
-    }
-}
-
-impl error::Error for AuthError {
-    fn description(&self) -> &str {
-        &self.details
-    }
+#[derive(Debug, Fail)]
+pub enum AuthError {
+    #[fail(display = "Missing refresh token")]
+    MissingRefreshToken,
+    #[fail(display = "Error while fetching token")]
+    TokneError,
 }
 
 impl<T: TokenStorage> GoogleClient<T> {
@@ -80,6 +62,7 @@ impl<T: TokenStorage> GoogleClient<T> {
         authenticator
             .authenticate()
             .map(|t| Token::new(t.access_token, t.refresh_token))
+            .map_err(|_| Error::from(AuthError::TokneError))
     }
 
     fn refresh_token(&self, token: &Token, scopes: &[String]) -> AuthResult<Token> {
@@ -91,10 +74,10 @@ impl<T: TokenStorage> GoogleClient<T> {
                         response.access_token,
                         Some(refresh_token.clone()),
                     )),
-                    Err(e) => Err(Box::new(e)),
+                    Err(e) => Err(Error::from(e)),
                 }
             }
-            None => Err(Box::new(AuthError::new("Missing refresh token"))),
+            None => Err(Error::from(AuthError::MissingRefreshToken)),
         }
     }
 
