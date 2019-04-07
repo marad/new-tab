@@ -1,4 +1,4 @@
-use std::error;
+use failure::Fallible;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -11,5 +11,5 @@ pub struct Event {
 }
 
 pub trait CalendarFacade: Send + Sync {
-    fn get_events(&self) -> Result<Vec<Event>, Box<error::Error>>;
+    fn get_events(&self) -> Fallible<Vec<Event>>;
 }

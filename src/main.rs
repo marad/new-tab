@@ -1,6 +1,9 @@
 #![allow(dead_code)]
+
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate failure;
 
 mod app;
 mod calendar;
@@ -10,8 +13,8 @@ mod feed;
 mod server;
 
 use crate::app::App;
-use std::error;
+use failure::Fallible;
 
-fn main() -> Result<(), Box<error::Error>> {
+fn main() -> Fallible<()> {
     App::new().start()
 }

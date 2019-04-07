@@ -1,4 +1,5 @@
 use super::{FeedFacade, FeedItem};
+use failure::Fallible;
 use rayon::prelude::*;
 use std::convert::From;
 use std::error;
@@ -37,7 +38,7 @@ impl Hackernews {
         }
     }
 
-    pub fn top_stories(&self) -> Result<Vec<Item>, Box<error::Error>> {
+    pub fn top_stories(&self) -> Fallible<Vec<Item>> {
         let url = format!("{}/topstories.json", &self.base_url);
         let mut result = reqwest::Client::builder().build()?.get(&url).send()?;
         let mut item_ids: Vec<u32> = result.json()?;
@@ -56,7 +57,7 @@ impl Hackernews {
 }
 
 impl FeedFacade for Hackernews {
-    fn get_items(&self) -> Result<Vec<FeedItem>, Box<error::Error>> {
+    fn get_items(&self) -> Fallible<Vec<FeedItem>> {
         Ok(self
             .top_stories()?
             .iter()

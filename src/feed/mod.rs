@@ -4,8 +4,7 @@ mod hackernews_feed;
 mod memory_feed;
 
 pub use config::*;
-pub use facade::FeedFacade;
-pub use facade::FeedItem;
+pub use facade::*;
 
 #[cfg(test)]
 mod test {

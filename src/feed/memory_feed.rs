@@ -1,5 +1,5 @@
 use super::{FeedFacade, FeedItem};
-use std::error;
+use failure::Fallible;
 
 pub struct MemoryFeed {
     feed: Vec<FeedItem>,
@@ -12,7 +12,7 @@ impl MemoryFeed {
 }
 
 impl FeedFacade for MemoryFeed {
-    fn get_items(&self) -> Result<Vec<FeedItem>, Box<error::Error>> {
+    fn get_items(&self) -> Fallible<Vec<FeedItem>> {
         Ok(self.feed.clone())
     }
 }

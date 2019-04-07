@@ -1,7 +1,7 @@
-use std::error;
+use failure::Fallible;
 
 use crate::common::*;
 
 pub trait ServerFacade: Send + Sync {
-    fn start_server(&self, app_state: SharedAppState) -> Result<(), Box<error::Error>>;
+    fn start_server(&self, app_state: SharedAppState) -> Fallible<()>;
 }

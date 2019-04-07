@@ -1,4 +1,10 @@
-use std::error;
+use failure::Fallible;
+
+#[derive(Fail, Debug)]
+pub enum FeedError {
+    #[fail(display = "Error while fetching the feed")]
+    FetchError,
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -17,5 +23,5 @@ impl FeedItem {
 }
 
 pub trait FeedFacade: Send + Sync {
-    fn get_items(&self) -> Result<Vec<FeedItem>, Box<error::Error>>;
+    fn get_items(&self) -> Fallible<Vec<FeedItem>>;
 }

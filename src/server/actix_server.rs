@@ -5,7 +5,7 @@ use crate::common::*;
 use crate::feed::FeedItem;
 
 use actix_web::{web, App, HttpServer};
-use std::error;
+use failure::Fallible;
 
 fn events(data: web::Data<SharedAppState>) -> web::Json<Vec<Event>> {
     web::Json(data.read().unwrap().events.clone())
@@ -24,7 +24,7 @@ impl ActixServer {
 }
 
 impl ServerFacade for ActixServer {
-    fn start_server(&self, app_state: SharedAppState) -> Result<(), Box<error::Error>> {
+    fn start_server(&self, app_state: SharedAppState) -> Fallible<()> {
         HttpServer::new(move || {
             App::new()
                 .data(app_state.clone())

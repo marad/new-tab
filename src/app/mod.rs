@@ -1,4 +1,4 @@
-use std::error;
+use failure::Fallible;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
@@ -17,7 +17,7 @@ impl App {
         Self {}
     }
 
-    pub fn start(&self) -> Result<(), Box<error::Error>> {
+    pub fn start(&self) -> Fallible<()> {
         let context = Arc::new(self.create_context());
         let app_state = Arc::new(RwLock::new(self.create_initial_app_state(&context)?));
         let _scheduler = self.start_scheduler(&context, &app_state);
@@ -35,13 +35,10 @@ impl App {
         }
     }
 
-    fn create_initial_app_state(
-        &self,
-        context: &Arc<AppContext>,
-    ) -> Result<AppState, Box<error::Error>> {
+    fn create_initial_app_state(&self, context: &Arc<AppContext>) -> Fallible<AppState> {
         Ok(AppState {
             events: context.calendar.get_events()?,
-            feed: context.feed.get_items()?,
+            feed: context.feed.get_items().unwrap(), //FIXME: poprawna obsluga bledu
         })
     }
 

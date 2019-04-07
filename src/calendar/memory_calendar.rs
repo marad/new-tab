@@ -1,5 +1,5 @@
 use super::facade::{CalendarFacade, Event};
-use std::error;
+use failure::Fallible;
 
 pub struct InMemoryCalendar {
     events: Vec<Event>,
@@ -12,7 +12,7 @@ impl InMemoryCalendar {
 }
 
 impl CalendarFacade for InMemoryCalendar {
-    fn get_events(&self) -> Result<Vec<Event>, Box<error::Error>> {
+    fn get_events(&self) -> Fallible<Vec<Event>> {
         Ok(self.events.clone())
     }
 }

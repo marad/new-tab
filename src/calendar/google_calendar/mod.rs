@@ -5,8 +5,8 @@ use client::token_storage::TokenStorage;
 use client::GoogleClient;
 
 use chrono::prelude::*;
+use failure::Fallible;
 use std::convert::From;
-use std::error;
 use time::Duration;
 
 use super::{CalendarFacade, Event};
@@ -27,7 +27,7 @@ impl<T: TokenStorage> Calendar<T> {
 }
 
 impl<T: TokenStorage> CalendarFacade for Calendar<T> {
-    fn get_events(&self) -> Result<Vec<Event>, Box<error::Error>> {
+    fn get_events(&self) -> Fallible<Vec<Event>> {
         let start = dbg!(Utc::now());
         let end = dbg!(start + Duration::weeks(1));
 
