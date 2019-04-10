@@ -4,6 +4,8 @@ use crate::calendar::Event;
 use crate::common::*;
 use crate::feed::FeedItem;
 
+use actix_files as fs;
+use actix_web::middleware::cors::Cors;
 use actix_web::{web, App, HttpServer};
 use failure::Fallible;
 
@@ -28,6 +30,8 @@ impl ServerFacade for ActixServer {
         HttpServer::new(move || {
             App::new()
                 .data(app_state.clone())
+                .wrap(Cors::new())
+                .service(fs::Files::new("/static/", "./static/"))
                 .route("/events", web::get().to(events))
                 .route("/feed", web::get().to(feed))
         })
