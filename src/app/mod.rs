@@ -1,4 +1,5 @@
 use failure::Fallible;
+use std::process::Command;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
@@ -77,6 +78,18 @@ impl App {
                 match feed.get_items() {
                     Ok(items) => state.feed = items,
                     Err(err) => eprintln!("Error while updating feed items: {}", err),
+                }
+            });
+        }
+
+        {
+            scheduler.every(5.minutes()).run(|| {
+                println!("Updating background image...");
+                let output = Command::new("sh").arg("download_background.sh").output();
+
+                match output {
+                    Ok(_) => println!("Background downloaded"),
+                    Err(_) => println!("Error while downloading background"),
                 }
             });
         }

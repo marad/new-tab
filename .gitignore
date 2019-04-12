@@ -7,3 +7,4 @@ client_id.json
 .idea/
 *.iml
 static/page/
+static/background*
